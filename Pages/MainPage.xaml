@@ -32,9 +32,13 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackPanel>
+        <StackPanel Margin="5">
             <Button Content="Получить записи" FontSize="12" Click="GetAll_Click"/>
             <TextBox Text="{Binding Author}" md:HintAssist.Hint="Введите автора" />
+            <md:NumericUpDown Value="{Binding MinYear}" md:HintAssist.Hint="Введите мин. год издания" />
+            <Button Content="Найти книгу" FontSize="12" Click="GetById_Click"/>
+            <md:NumericUpDown Value="{Binding Index}" md:HintAssist.Hint="Введите номер книги"/>
+            <Button Content="Добавить книгу" Click="Add_Click"/>
         </StackPanel>
     </Grid>
 </Page>

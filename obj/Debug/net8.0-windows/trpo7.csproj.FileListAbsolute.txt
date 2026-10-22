@@ -27,3 +27,6 @@ C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\refint\trpo7.dll
 C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\trpo7.pdb
 C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\trpo7.genruntimeconfig.cache
 C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\ref\trpo7.dll
+C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\trpo7.sourcelink.json
+C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\Pages\AddEditPage.g.cs
+C:\Voroshilov_pr41\trpo7\obj\Debug\net8.0-windows\Pages\AddEditPage.baml

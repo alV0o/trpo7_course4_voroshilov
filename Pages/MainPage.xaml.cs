@@ -28,6 +28,8 @@ namespace trpo7.Pages
     {
         public ObservableCollection<Book> Books { get; set; } = new ObservableCollection<Book>();
         public string Author { get; set; }
+        public int MinYear { get; set; } = 0;
+        public int Index { get; set; } = 0;
 
         private HttpClient client = new HttpClient();
         public MainPage()
@@ -38,9 +40,17 @@ namespace trpo7.Pages
 
         private async void GetAll_Click(object sender, RoutedEventArgs e)
         {
-            var response = await client.GetFromJsonAsync<List<Book>>("/api/v1/Book");
             //https://stackoverflow.com/questions/17096201/build-query-string-for-system-net-httpclient-get
-            if (response != null)
+            var builder = new UriBuilder(client.BaseAddress);
+            builder.Path = "/api/v1/Book";
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            if (!String.IsNullOrWhiteSpace(Author)) query["author"] = Author;
+            if (MinYear > 0) query["minYear"] = MinYear.ToString(); 
+            if (query.Count > 0) builder.Query = query.ToString();
+            
+            var response = await client.GetFromJsonAsync<List<Book>>(builder.ToString());
+            if (response != null) //??? почему нет StatusCode
             {
                 Books.Clear();
                 foreach (Book book in response)
@@ -48,6 +58,29 @@ namespace trpo7.Pages
                     Books.Add(book);
                 }
             }
+        }
+
+        private async void GetById_Click(object sender, RoutedEventArgs e)
+        {
+            string path = $"/api/v1/Book/{Index}";
+            try
+            {
+                var response = await client.GetFromJsonAsync<Book>(path);
+                if (response != null)
+                {
+                    Books.Clear();
+                    Books.Add(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(new Pages.AddEditPage(null, client));
         }
     }
 }
