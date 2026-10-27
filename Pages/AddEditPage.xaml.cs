@@ -24,45 +24,83 @@ namespace trpo7.Pages
     /// </summary>
     public partial class AddEditPage : Page
     {
-        private bool isEdit = false;
+        public bool IsEdit { get; set; } = false;
         public Book Book { get; set; }
         HttpClient client;
         public AddEditPage(Book? selectedBook, HttpClient _client)
         {
+            IsEdit = selectedBook != null;
             Book = new Book();
-            isEdit = selectedBook != null;
+            if (IsEdit)
+            {
+                Book.Id = selectedBook.Id;
+                Book.Title = selectedBook.Title;
+                Book.Author = selectedBook.Author;
+                Book.PublishYear = selectedBook.PublishYear;
+                Book.Price = selectedBook.Price;
+                Book.IsAvailable = selectedBook.IsAvailable;
+            }
             client = _client;
             InitializeComponent();
         }
 
-        private async void Post()
-        {
-            HttpResponseMessage response = await client.PostAsJsonAsync("/api/v1/Book", Book);
-            if (response.IsSuccessStatusCode)
-            {
-                MessageBox.Show("Книга успешно добавлена");
-                NavigationService.GoBack();
-            }
-            else
-            {
-                MessageBox.Show($"Ошибка: {response.StatusCode} \n" +
-                    $"{Book.Title} {Book.Author} {Book.PublishYear} {Book.Price} {Book.IsAvailable}");
-            }
-        }
-
-        private async void Patch()
-        {
-            HttpResponseMessage response = await client.PatchAsJsonAsync();
-        }
-
         private async void Save_Click(object sender, RoutedEventArgs e)
         {
-            Post();
+            try
+            {
+                HttpResponseMessage response;
+                string message = "";
+                if (Book.Id != 0)
+                {
+                    response = await client.PutAsJsonAsync($"api/v1/Book/{Book.Id}", Book);
+                    message = "Книга успешно обновлена";
+                }
+                else
+                {
+                    response = await client.PostAsJsonAsync($"api/v1/Book", Book);
+                    message = "Книга успешно добавлена";
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show(message);
+                    NavigationService.GoBack();
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Back_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.GoBack();
+        }
+
+        private async void Patch_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PatchAsJsonAsync($"api/v1/Book/{Book.Id}", Book);
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Частичное изменение применено");
+                    NavigationService.GoBack();
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -19,10 +19,12 @@
                   Grid.Column="1"
                   VerticalAlignment="Stretch" 
                   HorizontalAlignment="Stretch"
-                  HorizontalContentAlignment="Stretch">
+                  HorizontalContentAlignment="Stretch"
+                  SelectedItem="{Binding SelectedBook}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
+                        <Label Content="{Binding Id}"/>
                         <Label Content="{Binding Title}"/>
                         <Label Content="{Binding Author}"/>
                         <TextBlock Text="{Binding Price}"/>
@@ -32,13 +34,30 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <StackPanel Margin="5">
-            <Button Content="Получить записи" FontSize="12" Click="GetAll_Click"/>
-            <TextBox Text="{Binding Author}" md:HintAssist.Hint="Введите автора" />
-            <md:NumericUpDown Value="{Binding MinYear}" md:HintAssist.Hint="Введите мин. год издания" />
-            <Button Content="Найти книгу" FontSize="12" Click="GetById_Click"/>
-            <md:NumericUpDown Value="{Binding Index}" md:HintAssist.Hint="Введите номер книги"/>
-            <Button Content="Добавить книгу" Click="Add_Click"/>
-        </StackPanel>
+        <Grid Grid.Column="0" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Button Content="Получить записи" FontSize="12" Click="GetAll_Click"/>
+                <TextBox Text="{Binding Author}" md:HintAssist.Hint="Введите автора" />
+                <TextBlock Text="Введите мин. год издания"/>
+                <md:NumericUpDown Value="{Binding MinYear}" md:HintAssist.Hint="Введите мин. год издания" />
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Введите номер книги"/>
+                <md:NumericUpDown Value="{Binding Index}" md:HintAssist.Hint="Введите номер книги"/>
+                <Button Content="Найти книгу" FontSize="12" Click="GetById_Click"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2">
+                <Button Content="Добавить книгу" Click="Add_Click"/>
+                <Button Content="Изменить книгу" Click="Edit_Click"/>
+                <Button Content="Удалить книгу" Click="Delete_Click"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

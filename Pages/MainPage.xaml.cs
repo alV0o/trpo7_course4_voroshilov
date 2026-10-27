@@ -30,11 +30,12 @@ namespace trpo7.Pages
         public string Author { get; set; }
         public int MinYear { get; set; } = 0;
         public int Index { get; set; } = 0;
+        public Book SelectedBook { get; set; } = null;
 
         private HttpClient client = new HttpClient();
         public MainPage()
         {
-            client.BaseAddress = new Uri("https://localhost:7210/");
+            client.BaseAddress = new Uri("http://localhost:5000/"); //адрес api
             InitializeComponent();
         }
 
@@ -48,15 +49,22 @@ namespace trpo7.Pages
             if (!String.IsNullOrWhiteSpace(Author)) query["author"] = Author;
             if (MinYear > 0) query["minYear"] = MinYear.ToString(); 
             if (query.Count > 0) builder.Query = query.ToString();
-            
-            var response = await client.GetFromJsonAsync<List<Book>>(builder.ToString());
-            if (response != null) //??? почему нет StatusCode
+
+            try
             {
-                Books.Clear();
-                foreach (Book book in response)
+                var response = await client.GetFromJsonAsync<List<Book>>(builder.ToString());
+                if (response != null) //??? почему нет StatusCode
                 {
-                    Books.Add(book);
+                    Books.Clear();
+                    foreach (Book book in response)
+                    {
+                        Books.Add(book);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -81,6 +89,48 @@ namespace trpo7.Pages
         private void Add_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(new Pages.AddEditPage(null, client));
+            Books.Clear();
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedBook != null)
+            {
+                NavigationService.Navigate(new Pages.AddEditPage(SelectedBook, client));
+                Books.Clear();
+            }
+            else
+            {
+                MessageBox.Show("Выберите книгу");
+            }
+        }
+
+        private async void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedBook != null)
+            {
+                try
+                {
+                    var response = await client.DeleteAsync($"/api/v1/Book/{SelectedBook.Id}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Books.Remove(SelectedBook);
+                        SelectedBook = null;
+                    }
+                    else
+                    {
+                        MessageBox.Show(response.ReasonPhrase);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите книгу для удаления");
+            }
         }
     }
 }

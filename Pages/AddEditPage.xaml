@@ -17,7 +17,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="1" Margin="20" Background="#FF3DF7B4">
+        <Grid Grid.Column="1" Margin="20" Background="#2EAFF7">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition/>
@@ -28,9 +28,12 @@
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBox Text="{Binding Book.Title, UpdateSourceTrigger=PropertyChanged}" md:HintAssist.Hint="Введите название"/>
                 <TextBox Text="{Binding Book.Author, UpdateSourceTrigger=PropertyChanged}" md:HintAssist.Hint="Введите автора"/>
+                <TextBlock Text="Введите год издания"/>
                 <md:NumericUpDown Value="{Binding Book.PublishYear, UpdateSourceTrigger=PropertyChanged}" md:HintAssist.Hint="Введите год издания" />
+                <TextBlock Text="Введите цену"/>
                 <md:NumericUpDown Value="{Binding Book.Price, UpdateSourceTrigger=PropertyChanged}" md:HintAssist.Hint="Введите цену" />
-                <ToggleButton IsChecked="{Binding Book.IsAvailable, UpdateSourceTrigger=PropertyChanged}" md:HintAssist.Hint="Наличие"/>
+                <CheckBox Content="Наличие" IsChecked="{Binding Book.IsAvailable, UpdateSourceTrigger=PropertyChanged}" md:HintAssist.Hint="Наличие"/>
+                <Button Content="Изменить частично" Click="Patch_OnClick" IsEnabled="{Binding IsEdit}"/>
                 <Button Content="Сохранить" Click="Save_Click"/>
                 <Button Content="Назад" Click="Back_Click"/>
             </StackPanel>
